@@ -1,7 +1,17 @@
 import { drizzle } from "drizzle-orm/neon-http";
 import { neon } from "@neondatabase/serverless";
 import { eq, sql } from "drizzle-orm";
+import { readFileSync } from "node:fs";
 import * as schema from "./schema";
+
+// Load .env.local for local CLI use.
+try {
+  const content = readFileSync(".env.local", "utf8");
+  for (const line of content.split("\n")) {
+    const m = line.match(/^([A-Z_][A-Z0-9_]*)\s*=\s*"?(.*?)"?\s*$/);
+    if (m && !process.env[m[1]]) process.env[m[1]] = m[2];
+  }
+} catch {}
 
 if (!process.env.DATABASE_URL) {
   throw new Error("DATABASE_URL is not set");
