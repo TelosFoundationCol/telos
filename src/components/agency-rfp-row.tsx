@@ -24,6 +24,10 @@ export function AgencyRfpRow({
   const [open, setOpen] = useState(false);
   const [bid, setBid] = useState(alreadyBid);
   const days = daysUntil(rfp.deadline);
+  const closeLabel =
+    lang === "es"
+      ? days > 1 ? `Cierra en ${days}d` : days === 1 ? "Cierra mañana" : "Cierra hoy"
+      : days > 1 ? `Closes in ${days}d` : days === 1 ? "Closes tomorrow" : "Closes today";
 
   return (
     <div className="p-5 flex items-start gap-4">
@@ -35,7 +39,7 @@ export function AgencyRfpRow({
           <div className="font-medium">{business.name}</div>
           <Pill tone="amber">
             <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse mr-0.5" />
-            {days > 1 ? `Cierra en ${days}d` : days === 1 ? "Cierra mañana" : "Cierra hoy"}
+            {closeLabel}
           </Pill>
         </div>
         <div className="text-xs text-ink-muted mt-0.5">

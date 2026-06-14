@@ -373,6 +373,45 @@ export const es: Dict = {
   "dp.logout": "Salir",
   "dp.empty": "Aún no tienes aportes registrados. Cuando dones, aparecerán aquí.",
 
+  // Agency portal — landing / pending / suspended states
+  "agency.welcome.t": "¿Quieres recibir RFPs?",
+  "agency.welcome.p":
+    "Postula tu agencia. Una vez verificada por Telos, recibirás email cuando se abra un RFP en tu categoría.",
+  "agency.pending.t": "Tu agencia está siendo verificada.",
+  "agency.pending.p":
+    "Telos está revisando cámara de comercio, RUT y referencias. Cuando esté lista (típicamente 5–7 días), recibirás email y empezarán a llegarte RFPs.",
+  "agency.pending.status": "En revisión",
+  "agency.pending.contact": "Email de contacto:",
+  "agency.suspended.t": "Tu agencia está suspendida",
+  "agency.suspended.p": "Escríbenos a hola@telos.foundation y revisamos el caso.",
+
+  // Agency apply form
+  "agencyapply.t": "Postular como agencia",
+  "agencyapply.sub":
+    "Cuéntanos de tu agencia. Telos verifica con cámara de comercio, RUT y mínimo 3 referencias. Proceso ~7 días.",
+  "agencyapply.f.name": "Nombre de la agencia",
+  "agencyapply.f.category": "Categoría principal",
+  "agencyapply.f.city": "Ciudad",
+  "agencyapply.f.lead": "Lead / contacto principal",
+  "agencyapply.f.team": "Tamaño del equipo",
+  "agencyapply.f.contact": "Email de contacto de la agencia",
+  "agencyapply.f.contactnote":
+    "Aquí enviaremos avisos de RFPs abiertos. Puede ser el mismo que usaste para entrar o uno corporativo.",
+  "agencyapply.f.blurb": "Sobre tu agencia",
+  "agencyapply.f.blurbph":
+    "Qué hacen, hace cuántos años, qué tipo de clientes, qué los hace distintos…",
+  "agencyapply.f.cert": "Certificaciones / acreditaciones",
+  "agencyapply.submit": "Enviar postulación",
+  "agencyapply.next":
+    "Después de enviar: Telos revisará tu agencia. Mientras tanto, podrás ver el portal pero no postular a RFPs hasta que estés verificada.",
+  "agencyapply.ok.t": "¡Postulación enviada!",
+  "agencyapply.ok.p":
+    "Telos revisará tu agencia (cámara de comercio, RUT, referencias) en los próximos 7 días. Te avisaremos por email cuando esté lista para postular a RFPs.",
+  "agencyapply.ok.magic": "Te enviamos un link mágico a",
+  "agencyapply.ok.magic2":
+    "Ábrelo y entrarás directo a tu portal en estado \"en revisión\". Telos verificará en 5–7 días.",
+  "agencyapply.ok.cta": "Ir a mi portal",
+
   // Agency portal
   "ap.kicker": "Portal agencia",
   "ap.title": "Buenos días",
@@ -820,6 +859,43 @@ export const en: Dict = {
   "dp.again.cta": "Donate again",
   "dp.logout": "Sign out",
   "dp.empty": "No contributions on record yet. When you donate, they'll appear here.",
+
+  "agency.welcome.t": "Want to receive RFPs?",
+  "agency.welcome.p":
+    "Apply your agency. Once Telos verifies you, you'll get emailed when an RFP opens in your category.",
+  "agency.pending.t": "Your agency is being verified.",
+  "agency.pending.p":
+    "Telos is reviewing chamber of commerce, tax ID and references. Once ready (typically 5–7 days), you'll get an email and start receiving RFPs.",
+  "agency.pending.status": "In review",
+  "agency.pending.contact": "Contact email:",
+  "agency.suspended.t": "Your agency is suspended",
+  "agency.suspended.p": "Email us at hola@telos.foundation and we'll review.",
+
+  "agencyapply.t": "Apply as an agency",
+  "agencyapply.sub":
+    "Tell us about your agency. Telos verifies via chamber of commerce, tax ID and at least 3 references. ~7-day process.",
+  "agencyapply.f.name": "Agency name",
+  "agencyapply.f.category": "Primary category",
+  "agencyapply.f.city": "City",
+  "agencyapply.f.lead": "Lead / primary contact",
+  "agencyapply.f.team": "Team size",
+  "agencyapply.f.contact": "Agency contact email",
+  "agencyapply.f.contactnote":
+    "We'll send open-RFP notices here. Can be the email you signed in with or a corporate one.",
+  "agencyapply.f.blurb": "About your agency",
+  "agencyapply.f.blurbph":
+    "What you do, how long you've been at it, the kind of clients you work with, what makes you distinct…",
+  "agencyapply.f.cert": "Certifications / accreditations",
+  "agencyapply.submit": "Submit application",
+  "agencyapply.next":
+    "After submitting: Telos will review your agency. Meanwhile you can see the portal but can't bid on RFPs until verified.",
+  "agencyapply.ok.t": "Application sent!",
+  "agencyapply.ok.p":
+    "Telos will review your agency (chamber of commerce, tax ID, references) in the next 7 days. We'll email you when you're cleared to bid on RFPs.",
+  "agencyapply.ok.magic": "We sent a magic link to",
+  "agencyapply.ok.magic2":
+    "Open it and you'll land directly in your portal in \"under review\" state. Telos will verify in 5–7 days.",
+  "agencyapply.ok.cta": "Go to my portal",
 
   "ap.kicker": "Agency portal",
   "ap.title": "Good morning",

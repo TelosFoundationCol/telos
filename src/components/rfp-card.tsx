@@ -25,6 +25,10 @@ export function PublicRfpCard({
   const t = (k: string) => dictionaries[lang][k] ?? k;
   const days = daysUntil(rfp.deadline);
   const isOpen = rfp.status === "open";
+  const closeLabel =
+    lang === "es"
+      ? days > 1 ? `Cierra en ${days}d` : days === 1 ? "Cierra mañana" : "Cierra hoy"
+      : days > 1 ? `Closes in ${days}d` : days === 1 ? "Closes tomorrow" : "Closes today";
   return (
     <div className="p-5 flex items-start gap-4">
       <div className="w-10 h-10 rounded-xl bg-paper-sunken flex items-center justify-center text-xl shrink-0">
@@ -36,7 +40,7 @@ export function PublicRfpCard({
           {isOpen ? (
             <Pill tone="amber">
               <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse mr-0.5" />
-              {days > 1 ? `Cierra en ${days}d` : days === 1 ? "Cierra mañana" : "Cierra hoy"}
+              {closeLabel}
             </Pill>
           ) : (
             <Pill tone="blue">{t("post.review")}</Pill>

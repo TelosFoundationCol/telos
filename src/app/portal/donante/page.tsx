@@ -96,7 +96,9 @@ export default async function DonorPortalPage() {
                             ? lang === "es"
                               ? "Validando"
                               : "Validating"
-                            : "Rechazado"}
+                            : lang === "es"
+                              ? "Rechazado"
+                              : "Rejected"}
                       </div>
                     </div>
                     <div className="text-right">
