@@ -54,9 +54,9 @@ export function MagicLinkForm({ next }: { next: string }) {
   if (sent) {
     return (
       <div>
-        <div className="text-xs uppercase tracking-wider text-ink-subtle mb-2 inline-flex items-center gap-2">
+        <div className="text-xs uppercase tracking-wider text-ink-subtle mb-3 inline-flex items-center gap-2">
           <PortalIcon className="w-3.5 h-3.5" />
-          {t(copy.titleKey)}
+          <span>{t(copy.titleKey)}</span>
         </div>
         <div className="w-12 h-12 rounded-2xl bg-brand-soft text-brand flex items-center justify-center mb-5">
           <MailCheck className="w-5 h-5" />
@@ -89,11 +89,13 @@ export function MagicLinkForm({ next }: { next: string }) {
     <>
       <div className="text-xs uppercase tracking-wider text-ink-subtle mb-3 inline-flex items-center gap-2">
         <PortalIcon className="w-3.5 h-3.5" />
-        {portal === "donor"
-          ? t("nav.portal.donor")
-          : portal === "agency"
-            ? t("nav.portal.agency")
-            : t("nav.portal.admin")}
+        <span>
+          {portal === "donor"
+            ? t("nav.portal.donor")
+            : portal === "agency"
+              ? t("nav.portal.agency")
+              : t("nav.portal.admin")}
+        </span>
       </div>
       <div className="w-12 h-12 rounded-2xl bg-paper-sunken flex items-center justify-center mb-5">
         <Mail className="w-5 h-5 text-ink-muted" />

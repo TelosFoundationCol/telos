@@ -255,7 +255,7 @@ export const es: Dict = {
   "ag.lead": "Líder",
   "ag.apply.t": "¿Tienes una agencia? Postula.",
   "ag.apply.p": "Proceso de verificación ~2 semanas. Sin costo.",
-  "ag.apply.cta": "Ir al Portal Agencia",
+  "ag.apply.cta": "Postular mi agencia",
 
   // Donate
   "don.kicker": "Donar",
@@ -705,7 +705,7 @@ export const en: Dict = {
   "ag.lead": "Lead",
   "ag.apply.t": "Have an agency? Apply.",
   "ag.apply.p": "~2-week verification. No cost.",
-  "ag.apply.cta": "Go to Agency Portal",
+  "ag.apply.cta": "Apply my agency",
 
   "don.kicker": "Donate",
   "don.title": "Your donation, step by step.",

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Briefcase, Check, Send } from "lucide-react";
+import { Briefcase, Check, MailCheck, Send } from "lucide-react";
 import { Input, Label, Select, Textarea } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useT } from "@/lib/i18n/context";
@@ -24,7 +24,7 @@ export function AgencyApplyForm({ userEmail }: { userEmail: string }) {
   });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [done, setDone] = useState(false);
+  const [done, setDone] = useState<null | { magicLinkSent: boolean; email?: string }>(null);
 
   const valid =
     data.name.length >= 2 &&
@@ -46,9 +46,9 @@ export function AgencyApplyForm({ userEmail }: { userEmail: string }) {
           teamSize: data.teamSize ? Number(data.teamSize) : undefined,
         }),
       });
-      const j = (await res.json()) as { id?: string; error?: string };
+      const j = (await res.json()) as { id?: string; error?: string; magicLinkSent?: boolean; email?: string };
       if (!res.ok || !j.id) throw new Error(j.error ?? "submit-failed");
-      setDone(true);
+      setDone({ magicLinkSent: !!j.magicLinkSent, email: j.email });
       router.refresh();
     } catch (e) {
       setError((e as Error).message);
@@ -61,14 +61,41 @@ export function AgencyApplyForm({ userEmail }: { userEmail: string }) {
     return (
       <div className="bg-brand-soft border border-brand-border rounded-2xl p-6 sm:p-8 text-center">
         <div className="w-12 h-12 rounded-full bg-brand text-paper flex items-center justify-center mx-auto">
-          <Check className="w-6 h-6" />
+          {done.magicLinkSent ? <MailCheck className="w-6 h-6" /> : <Check className="w-6 h-6" />}
         </div>
         <h2 className="serif text-3xl mt-5">
           {t("agencyapply.ok.t", "¡Postulación enviada!")}
         </h2>
-        <p className="text-ink-muted mt-2 max-w-md mx-auto">
-          {t("agencyapply.ok.p", "Telos revisará tu agencia (cámara de comercio, RUT, referencias) en los próximos 7 días. Te avisaremos por email cuando esté lista para postular a RFPs.")}
-        </p>
+        {done.magicLinkSent ? (
+          <p className="text-ink-muted mt-2 max-w-md mx-auto">
+            {t(
+              "agencyapply.ok.magic",
+              "Te enviamos un link mágico a",
+            )}{" "}
+            <span className="text-ink font-medium">{done.email}</span>.{" "}
+            {t(
+              "agencyapply.ok.magic2",
+              "Ábrelo y entrarás directo a tu portal en estado \"en revisión\". Telos verificará en 5–7 días.",
+            )}
+          </p>
+        ) : (
+          <p className="text-ink-muted mt-2 max-w-md mx-auto">
+            {t(
+              "agencyapply.ok.p",
+              "Telos revisará tu agencia (cámara de comercio, RUT, referencias) en los próximos 7 días. Te avisaremos por email cuando esté lista para postular a RFPs.",
+            )}
+          </p>
+        )}
+        {!done.magicLinkSent && (
+          <div className="mt-6">
+            <a
+              href="/portal/agencia"
+              className="inline-flex items-center gap-2 bg-ink text-paper rounded-full px-4 py-2 text-sm font-medium"
+            >
+              <span>{t("agencyapply.ok.cta", "Ir a mi portal")}</span>
+            </a>
+          </div>
+        )}
       </div>
     );
   }

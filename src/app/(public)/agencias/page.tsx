@@ -66,7 +66,7 @@ export default async function AgenciesPage() {
           <p className="text-sm text-ink-muted mt-1">{t("ag.apply.p")}</p>
         </div>
         <Link
-          href="/portal/agencia"
+          href="/agencias/aplicar"
           className="inline-flex items-center gap-2 bg-ink text-paper px-4 py-2.5 rounded-full text-sm font-medium hover:bg-stone-800"
         >
           <span>{t("ag.apply.cta")}</span>
