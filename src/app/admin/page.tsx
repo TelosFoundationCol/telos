@@ -3,6 +3,7 @@ import { getT } from "@/lib/i18n/server";
 import {
   fetchAllRfpsWithProposals,
   fetchKpis,
+  fetchPendingAgencies,
   fetchPendingDonations,
   fetchPendingPostulados,
 } from "@/lib/data/queries";
@@ -11,15 +12,17 @@ import { LogoutButton } from "@/components/logout-button";
 import { AdminPipeline } from "@/components/admin-pipeline";
 import { AdminDonationRow } from "@/components/admin-donation-row";
 import { AdminPostuladoRow } from "@/components/admin-postulado-row";
+import { AdminAgencyRow } from "@/components/admin-agency-row";
 import { fmtCop } from "@/lib/utils";
 
 export default async function AdminPage() {
   const session = await requireAdmin();
   const { t, lang } = await getT();
-  const [kpis, pendingDonations, pendingPostulados, allRfps] = await Promise.all([
+  const [kpis, pendingDonations, pendingPostulados, pendingAgencies, allRfps] = await Promise.all([
     fetchKpis(),
     fetchPendingDonations(),
     fetchPendingPostulados(),
+    fetchPendingAgencies(),
     fetchAllRfpsWithProposals(),
   ]);
 
@@ -46,10 +49,30 @@ export default async function AdminPage() {
         <StatStrip>
           <StatCell label={t("trans.escrow")} value={fmtCop(kpis.raisedCents)} />
           <StatCell label={lang === "es" ? "Postulados pendientes" : "Pending nominations"} value={pendingPostulados.length} />
+          <StatCell label={lang === "es" ? "Agencias por verificar" : "Agencies to verify"} value={pendingAgencies.length} />
           <StatCell label={lang === "es" ? "Donaciones por validar" : "Donations to validate"} value={pendingDonations.length} />
-          <StatCell label={t("stat.businesses")} value={kpis.businesses} />
         </StatStrip>
       </div>
+
+      {pendingAgencies.length > 0 && (
+        <div className="mt-10">
+          <Card>
+            <CardHeader
+              title={lang === "es" ? "Agencias por verificar" : "Agencies to verify"}
+              subtitle={
+                lang === "es"
+                  ? "Revisar cámara de comercio + RUT + referencias antes de aprobar."
+                  : "Check chamber of commerce + tax ID + references before approving."
+              }
+            />
+            <div className="divide-y divide-line">
+              {pendingAgencies.map((a) => (
+                <AdminAgencyRow key={a.id} agency={a} lang={lang} />
+              ))}
+            </div>
+          </Card>
+        </div>
+      )}
 
       <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-4">
         <Card>

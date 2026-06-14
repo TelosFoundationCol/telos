@@ -326,6 +326,15 @@ export const es: Dict = {
   "login.title": "Tu portal de donante",
   "login.sub":
     "Sin contraseña. Te enviamos un link mágico al email con el que donaste y entras de un clic.",
+  "login.title.donor": "Tu portal de donante",
+  "login.sub.donor":
+    "Sin contraseña. Te enviamos un link mágico al email con el que donaste y entras de un clic.",
+  "login.title.agency": "Portal de agencias",
+  "login.sub.agency":
+    "Sin contraseña. Si tu agencia ya está vetada, recibirás los RFPs abiertos en tu categoría. Si no, puedes postular tu agencia desde dentro.",
+  "login.title.admin": "Panel Telos",
+  "login.sub.admin":
+    "Acceso solo para el equipo de Telos. Te enviamos un link mágico al email autorizado.",
   "login.email": "Tu email",
   "login.send": "Enviar link mágico",
   "login.note":
@@ -765,6 +774,15 @@ export const en: Dict = {
   "login.title": "Your donor portal",
   "login.sub":
     "No password. We send a magic link to the email you donated with — one click and you're in.",
+  "login.title.donor": "Your donor portal",
+  "login.sub.donor":
+    "No password. We send a magic link to the email you donated with — one click and you're in.",
+  "login.title.agency": "Agency portal",
+  "login.sub.agency":
+    "No password. If your agency is already vetted, you'll see open RFPs in your category. If not, you can apply from inside.",
+  "login.title.admin": "Telos panel",
+  "login.sub.admin":
+    "Telos team only. We'll send a magic link to the authorized email.",
   "login.email": "Your email",
   "login.send": "Send magic link",
   "login.note":

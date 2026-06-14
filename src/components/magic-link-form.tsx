@@ -1,13 +1,30 @@
 "use client";
 
 import { useState } from "react";
-import { Mail, MailCheck, Send } from "lucide-react";
+import { Briefcase, HandCoins, Mail, MailCheck, Send, ShieldCheck } from "lucide-react";
 import { Input, Label } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useT } from "@/lib/i18n/context";
 
+type PortalKind = "donor" | "agency" | "admin";
+
+function portalFromNext(next: string): PortalKind {
+  if (next.startsWith("/admin")) return "admin";
+  if (next.startsWith("/portal/agencia")) return "agency";
+  return "donor";
+}
+
+const portalCopy: Record<PortalKind, { titleKey: string; subKey: string; icon: React.ComponentType<{ className?: string }> }> = {
+  donor: { titleKey: "login.title.donor", subKey: "login.sub.donor", icon: HandCoins },
+  agency: { titleKey: "login.title.agency", subKey: "login.sub.agency", icon: Briefcase },
+  admin: { titleKey: "login.title.admin", subKey: "login.sub.admin", icon: ShieldCheck },
+};
+
 export function MagicLinkForm({ next }: { next: string }) {
   const { t } = useT();
+  const portal = portalFromNext(next);
+  const copy = portalCopy[portal];
+  const PortalIcon = copy.icon;
   const [email, setEmail] = useState("");
   const [sent, setSent] = useState(false);
   const [sending, setSending] = useState(false);
@@ -37,6 +54,10 @@ export function MagicLinkForm({ next }: { next: string }) {
   if (sent) {
     return (
       <div>
+        <div className="text-xs uppercase tracking-wider text-ink-subtle mb-2 inline-flex items-center gap-2">
+          <PortalIcon className="w-3.5 h-3.5" />
+          {t(copy.titleKey)}
+        </div>
         <div className="w-12 h-12 rounded-2xl bg-brand-soft text-brand flex items-center justify-center mb-5">
           <MailCheck className="w-5 h-5" />
         </div>
@@ -66,11 +87,19 @@ export function MagicLinkForm({ next }: { next: string }) {
 
   return (
     <>
+      <div className="text-xs uppercase tracking-wider text-ink-subtle mb-3 inline-flex items-center gap-2">
+        <PortalIcon className="w-3.5 h-3.5" />
+        {portal === "donor"
+          ? t("nav.portal.donor")
+          : portal === "agency"
+            ? t("nav.portal.agency")
+            : t("nav.portal.admin")}
+      </div>
       <div className="w-12 h-12 rounded-2xl bg-paper-sunken flex items-center justify-center mb-5">
         <Mail className="w-5 h-5 text-ink-muted" />
       </div>
-      <h1 className="serif text-4xl sm:text-5xl tracking-tight leading-[1.05]">{t("login.title")}</h1>
-      <p className="text-ink-muted mt-3">{t("login.sub")}</p>
+      <h1 className="serif text-4xl sm:text-5xl tracking-tight leading-[1.05]">{t(copy.titleKey)}</h1>
+      <p className="text-ink-muted mt-3">{t(copy.subKey)}</p>
 
       <div className="mt-8 space-y-3">
         <div>

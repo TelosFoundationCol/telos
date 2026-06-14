@@ -285,6 +285,20 @@ export async function fetchDonorImpact(email: string) {
   }
 }
 
+export async function fetchPendingAgencies() {
+  try {
+    const db = getDb();
+    return await db
+      .select()
+      .from(agencies)
+      .where(eq(agencies.status, "pending_verification"))
+      .orderBy(desc(agencies.createdAt));
+  } catch (err) {
+    logErr("pendingAgencies", err);
+    return [];
+  }
+}
+
 export async function fetchPendingDonations() {
   try {
     const db = getDb();

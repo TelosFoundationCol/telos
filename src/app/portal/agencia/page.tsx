@@ -1,32 +1,113 @@
-import { requireAgency } from "@/lib/auth/rbac";
+import { Briefcase, Loader, ShieldCheck } from "lucide-react";
+import { requireSession } from "@/lib/auth/rbac";
 import { getT } from "@/lib/i18n/server";
 import { fetchAgencyByUser, fetchRfpsForAgency } from "@/lib/data/queries";
-import { StatCell, StatStrip, Card, CardHeader } from "@/components/ui/card";
+import { StatCell, StatStrip, Card, CardHeader, Pill } from "@/components/ui/card";
 import { LogoutButton } from "@/components/logout-button";
 import { AgencyRfpRow } from "@/components/agency-rfp-row";
-import { fmtCop } from "@/lib/utils";
+import { AgencyApplyForm } from "@/components/agency-apply-form";
+import { fmtCop, pickLocalized } from "@/lib/utils";
 
 export default async function AgencyPortalPage() {
-  const session = await requireAgency();
+  const session = await requireSession("/auth/magic-link?next=/portal/agencia");
   const { t, lang } = await getT();
 
   const agency = await fetchAgencyByUser(session.userId);
 
+  // ── No linked agency → apply form ──────────────────────────────────
   if (!agency) {
     return (
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-16">
-        <h1 className="serif text-4xl tracking-tight">
-          {lang === "es" ? "Tu agencia no está verificada todavía" : "Your agency isn't verified yet"}
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12">
+        <div className="flex items-center justify-between flex-wrap gap-3 mb-8">
+          <div>
+            <div className="text-xs uppercase tracking-wider text-ink-subtle mb-2 inline-flex items-center gap-2">
+              <Briefcase className="w-3.5 h-3.5" />
+              <span>{t("nav.portal.agency")}</span>
+              <LogoutButton />
+            </div>
+            <h1 className="serif text-4xl sm:text-5xl tracking-tight">
+              {t("agency.welcome.t", "¿Quieres recibir RFPs?")}
+            </h1>
+            <p className="text-ink-muted mt-2 max-w-xl">
+              {t(
+                "agency.welcome.p",
+                "Postula tu agencia. Una vez verificada por Telos, recibirás email cuando se abra un RFP en tu categoría.",
+              )}
+            </p>
+          </div>
+        </div>
+        <AgencyApplyForm userEmail={session.email} />
+      </div>
+    );
+  }
+
+  // ── Pending verification → waiting state ───────────────────────────
+  if (agency.status === "pending_verification") {
+    const blurb = pickLocalized(agency, "blurb", lang);
+    return (
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12">
+        <div className="text-xs uppercase tracking-wider text-ink-subtle mb-2 inline-flex items-center gap-2">
+          <Briefcase className="w-3.5 h-3.5" />
+          <span>
+            {t("nav.portal.agency")} · {agency.name}
+          </span>
+          <LogoutButton />
+        </div>
+        <h1 className="serif text-4xl sm:text-5xl tracking-tight">
+          {t("agency.pending.t", "Tu agencia está siendo verificada.")}
+        </h1>
+        <p className="text-ink-muted mt-3 max-w-xl">
+          {t(
+            "agency.pending.p",
+            "Telos está revisando cámara de comercio, RUT y referencias. Cuando esté lista (típicamente 5–7 días), recibirás email y empezarán a llegarte RFPs.",
+          )}
+        </p>
+        <Card className="mt-8 p-6">
+          <div className="flex items-start gap-3 mb-4">
+            <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center shrink-0">
+              <Loader className="w-5 h-5" />
+            </div>
+            <div>
+              <Pill tone="amber">
+                {t("agency.pending.status", "En revisión")}
+              </Pill>
+              <div className="font-semibold tracking-tight mt-2">{agency.name}</div>
+              <div className="text-xs text-ink-muted">
+                {t(`cat.${agency.category}`)} · {agency.city}
+              </div>
+            </div>
+          </div>
+          {blurb && (
+            <div className="bg-paper-subtle border border-line rounded-xl p-4 text-sm text-ink-muted leading-relaxed">
+              {blurb}
+            </div>
+          )}
+          <div className="mt-4 text-xs text-ink-muted">
+            {t("agency.pending.contact", "Email de contacto:")} {agency.contactEmail}
+          </div>
+        </Card>
+      </div>
+    );
+  }
+
+  // ── Suspended → quiet message ──────────────────────────────────────
+  if (agency.status === "suspended") {
+    return (
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 py-16 text-center">
+        <h1 className="serif text-3xl tracking-tight">
+          {t("agency.suspended.t", "Tu agencia está suspendida")}
         </h1>
         <p className="text-ink-muted mt-3">
-          {lang === "es"
-            ? "Telos revisa cada agencia con cámara de comercio, RUT y referencias. Te avisaremos por email cuando esté lista."
-            : "Telos verifies each agency via chamber of commerce, tax ID and references. We'll email you when ready."}
+          {t(
+            "agency.suspended.p",
+            "Escríbenos a hola@telos.foundation y revisamos el caso.",
+          )}
         </p>
       </div>
     );
   }
 
+  // ── Active agency → full portal ────────────────────────────────────
   const rfps = await fetchRfpsForAgency(agency.id);
 
   return (
@@ -34,9 +115,14 @@ export default async function AgencyPortalPage() {
       <div className="flex items-end justify-between flex-wrap gap-3">
         <div>
           <div className="text-xs uppercase tracking-wider text-ink-subtle mb-2 inline-flex items-center gap-2">
+            <Briefcase className="w-3.5 h-3.5" />
             <span>
               {t("ap.kicker")} · {agency.name}
             </span>
+            <Pill tone="brand">
+              <ShieldCheck className="w-2.5 h-2.5" />
+              {t("ag.verified")}
+            </Pill>
             <LogoutButton />
           </div>
           <h1 className="serif text-5xl tracking-tight">
@@ -51,7 +137,10 @@ export default async function AgencyPortalPage() {
           <StatCell label={t("ap.active")} value={agency.projectsCompleted} />
           <StatCell label={t("ap.pending")} value={rfps.length} />
           <StatCell label={t("ap.invoiced")} value={fmtCop(0)} />
-          <StatCell label={t("ap.csat")} value={agency.csat ? `${(agency.csat / 10).toFixed(1)} / 5` : "—"} />
+          <StatCell
+            label={t("ap.csat")}
+            value={agency.csat ? `${(agency.csat / 10).toFixed(1)} / 5` : "—"}
+          />
         </StatStrip>
       </div>
 

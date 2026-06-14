@@ -44,11 +44,12 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  if (pathname.startsWith("/portal/agencia") && session.role !== "agency_member" && session.role !== "admin") {
-    const url = req.nextUrl.clone();
-    url.pathname = "/portal/donante";
-    return NextResponse.redirect(url);
-  }
+  // /portal/agencia is open to ANY authenticated user:
+  //   - agency_member → sees their RFP feed + projects
+  //   - donor (no linked agency) → sees the agency application form
+  //   - admin → sees the same agency view (admins can also access /admin separately)
+  //
+  // /portal/donante is open to anyone too (donors see their impact, others can still browse).
 
   return NextResponse.next();
 }
