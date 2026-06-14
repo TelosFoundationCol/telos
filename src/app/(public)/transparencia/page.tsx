@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Download, FileText } from "lucide-react";
+import { ArrowRight, Download } from "lucide-react";
 import { getT } from "@/lib/i18n/server";
 import { fetchKpis, fetchLedger, fetchOpenRfps } from "@/lib/data/queries";
 import { Card, CardHeader, StatStrip, StatCell } from "@/components/ui/card";
@@ -26,14 +26,14 @@ export default async function TransparenciaPage() {
           <p className="text-ink-muted mt-3 max-w-2xl">{t("trans.sub")}</p>
         </div>
         <div className="flex items-center gap-2">
-          <button className="inline-flex items-center gap-1.5 border border-line rounded-full px-3 py-1.5 text-sm hover:bg-paper-sunken">
+          <a
+            href="/api/ledger/export"
+            download
+            className="inline-flex items-center gap-1.5 border border-line rounded-full px-3 py-1.5 text-sm hover:bg-paper-sunken"
+          >
             <Download className="w-3.5 h-3.5" />
             <span>{t("trans.csv")}</span>
-          </button>
-          <button className="inline-flex items-center gap-1.5 border border-line rounded-full px-3 py-1.5 text-sm hover:bg-paper-sunken">
-            <FileText className="w-3.5 h-3.5" />
-            <span>{t("trans.audit")}</span>
-          </button>
+          </a>
         </div>
       </div>
 

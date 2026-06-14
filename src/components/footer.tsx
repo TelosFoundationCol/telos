@@ -68,9 +68,15 @@ export function Footer() {
         <div className="mt-12 pt-6 border-t border-line flex flex-wrap items-center justify-between gap-3 text-xs text-ink-subtle">
           <div>© 2026 Fundación Telos · {t("ft.rights")}</div>
           <div className="flex gap-5">
-            <span className="hover:text-ink cursor-pointer">{t("ft.privacy")}</span>
-            <span className="hover:text-ink cursor-pointer">{t("ft.terms")}</span>
-            <span className="hover:text-ink cursor-pointer">{t("ft.code")}</span>
+            <Link href="/legal/privacidad" className="hover:text-ink">
+              {t("ft.privacy")}
+            </Link>
+            <Link href="/legal/terminos" className="hover:text-ink">
+              {t("ft.terms")}
+            </Link>
+            <Link href="/legal/codigo" className="hover:text-ink">
+              {t("ft.code")}
+            </Link>
           </div>
         </div>
       </div>
