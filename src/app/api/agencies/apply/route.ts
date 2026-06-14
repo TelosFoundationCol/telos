@@ -96,14 +96,20 @@ export async function POST(req: NextRequest) {
 
   // Unauthed (or signed in with a different email): send a magic link so the
   // applicant can enter their pending portal from their inbox.
+  // The user row we just upserted above guarantees createMagicLink will return
+  // a token (it only returns null for completely unknown emails).
+  let magicLinkSent = false;
   try {
-    const { token } = await createMagicLink({ email: contactEmail, ip });
-    const url = magicLinkUrl(token);
-    const lang = await getLang();
-    await sendMagicLinkEmail({ to: contactEmail, url, lang });
+    const result = await createMagicLink({ email: contactEmail, ip });
+    if (result) {
+      const url = magicLinkUrl(result.token);
+      const lang = await getLang();
+      await sendMagicLinkEmail({ to: contactEmail, url, lang });
+      magicLinkSent = true;
+    }
   } catch (err) {
     console.error("[agency-apply magic link]", err);
   }
 
-  return NextResponse.json({ id: created.id, magicLinkSent: true, email: contactEmail });
+  return NextResponse.json({ id: created.id, magicLinkSent, email: contactEmail });
 }

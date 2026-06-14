@@ -18,10 +18,25 @@ import { getEnv } from "@/lib/env";
 
 const TOKEN_TTL_MINUTES = 15;
 
+/**
+ * Create a magic-link token for an email — but ONLY if the email corresponds
+ * to an existing user OR is on the admin allowlist. Returns null otherwise,
+ * so the route handler can skip sending and avoid spamming uninvolved inboxes
+ * (and Resend quota).
+ *
+ * Users are created upstream by the flows that legitimately bring someone in:
+ *   - /api/donations         (donor flow creates the user before this is called)
+ *   - /api/agencies/apply    (agency flow creates the user before this is called)
+ *   - ADMIN_EMAILS bootstrap (first admin sign-in creates the user here)
+ *
+ * Note for callers: route handlers should always return the same "ok" JSON
+ * regardless of whether a link was created, so the email's existence in our
+ * DB is never leaked.
+ */
 export async function createMagicLink(opts: {
   email: string;
   ip?: string;
-}): Promise<{ token: string; userId: string; isNewUser: boolean }> {
+}): Promise<{ token: string; userId: string; isNewUser: boolean } | null> {
   const env = getEnv();
   const adminEmails = env.ADMIN_EMAILS
     .split(",")
@@ -31,16 +46,18 @@ export async function createMagicLink(opts: {
   const email = opts.email.trim().toLowerCase();
   const db = getDb();
 
-  // Upsert user
   let user = (await db.select().from(users).where(eq(users.email, email)).limit(1))[0];
   let isNewUser = false;
+
   if (!user) {
-    const role = adminEmails.includes(email) ? "admin" : "donor";
-    const [created] = await db.insert(users).values({ email, role }).returning();
+    // Only admin allowlist emails get auto-provisioned. Everyone else has to
+    // come in through donate / agency-apply (which create the user record).
+    if (!adminEmails.includes(email)) return null;
+    const [created] = await db.insert(users).values({ email, role: "admin" }).returning();
     user = created;
     isNewUser = true;
   } else if (adminEmails.includes(email) && user.role !== "admin") {
-    // Promote to admin if listed in ADMIN_EMAILS
+    // Existing user upgraded to admin if their email is now on the allowlist.
     await db.update(users).set({ role: "admin" }).where(eq(users.id, user.id));
     user.role = "admin";
   }

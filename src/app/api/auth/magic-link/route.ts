@@ -28,15 +28,18 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "rate-limited" }, { status: 429 });
   }
 
-  const { token } = await createMagicLink({ email: parsed.data.email, ip });
-  const url = magicLinkUrl(token);
-  const lang = await getLang();
-
-  // Fire-and-forget — we always return OK regardless of email delivery so we
-  // don't leak whether an email exists in our DB.
-  sendMagicLinkEmail({ to: parsed.data.email, url, lang }).catch((err) =>
-    console.error("[magic-link email]", err),
-  );
+  const result = await createMagicLink({ email: parsed.data.email, ip });
+  // result === null means the email doesn't correspond to any user record (and
+  // isn't on the admin allowlist). We deliberately return the same "ok" JSON
+  // so the client UX is identical — no leakage of whether the email is in our
+  // DB, and no email is sent (saves Resend quota and avoids spamming inboxes).
+  if (result) {
+    const url = magicLinkUrl(result.token);
+    const lang = await getLang();
+    sendMagicLinkEmail({ to: parsed.data.email, url, lang }).catch((err) =>
+      console.error("[magic-link email]", err),
+    );
+  }
 
   return NextResponse.json({ ok: true });
 }
